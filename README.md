@@ -82,4 +82,8 @@ Self-checks: `npx tsx <name>.check.ts` (e.g. `npx tsx credentials.check.ts`).
 
 ## License
 
-[MIT](LICENSE)
+JARVIS is free for **personal, non-commercial use**: you may download it, use it, study it and change it for yourself.
+
+**Business use, selling it, or including it in a paid product is not allowed** without my written permission. To ask for a business license, contact me through my GitHub profile: <https://github.com/waqarmubeen0-sudo>.
+
+The full terms are the [PolyForm Noncommercial License 1.0.0](LICENSE).

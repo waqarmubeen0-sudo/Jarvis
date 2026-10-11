@@ -3,7 +3,7 @@
   "productName": "JARVIS",
   "version": "1.0.0",
   "description": "J.A.R.V.I.S. real-time voice assistant for your PC. Bring your own Gemini API key.",
-  "license": "MIT",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "private": true,
   "type": "module",
   "main": "jarvis-desktop.mjs",
