@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #05080e; color: #e6faff; font-family: 'Courier New', monospace; overflow: hidden; }
+  #wrap { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  #hud { display: flex; gap: 24px; font-size: 16px; letter-spacing: 2px; }
+  #hud b { color: #00e5ff; }
+  canvas { background: #08111c; border: 2px solid #00e5ff55; box-shadow: 0 0 24px #00e5ff33; image-rendering: pixelated; }
+  #over { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #000a; }
+  #over h1 { margin: 0; font-size: 34px; color: #ff4d6d; letter-spacing: 4px; }
+  button { font: inherit; font-size: 16px; padding: 10px 22px; color: #05080e; background: #00e5ff; border: 0; border-radius: 6px; cursor: pointer; letter-spacing: 2px; }
+  button:hover { filter: brightness(1.15); }
+  #help { font-size: 12px; color: #7f97a8; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="hud">SCORE <b id="score">0</b> BEST <b id="best">0</b> <span id="state"></span></div>
+  <canvas id="c" width="400" height="400" aria-label="Snake board"></canvas>
+  <div id="help">Arrows / WASD to steer · P to pause · Enter to restart</div>
+</div>
+<div id="over" role="dialog" aria-label="Game over">
+  <h1>GAME OVER</h1>
+  <div id="final"></div>
+  <button id="restart" type="button">RESTART</button>
+</div>
+<script>
+(() => {
+  const N = 20;                         // grid cells per side
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score'), bestEl = document.getElementById('best');
+  const stateEl = document.getElementById('state'), over = document.getElementById('over'), finalEl = document.getElementById('final');
+  let snake, dir, nextDir, food, score, best = 0, alive, paused, stepMs, acc, last;
+
+  function fit() {                      // scale the board to the window, keep crisp cells
+    const size = Math.max(160, Math.floor(Math.min(innerWidth, innerHeight - 90) / N) * N);
+    canvas.width = canvas.height = size;
+  }
+  function placeFood() {
+    const free = [];
+    for (let x = 0; x < N; x++) for (let y = 0; y < N; y++) if (!snake.some(s => s.x === x && s.y === y)) free.push({ x, y });
+    food = free.length ? free[Math.floor(Math.random() * free.length)] : null;
+  }
+  function reset() {
+    snake = [{ x: 9, y: 10 }, { x: 8, y: 10 }, { x: 7, y: 10 }];
+    dir = { x: 1, y: 0 }; nextDir = dir;
+    score = 0; alive = true; paused = false; stepMs = 130; acc = 0; last = performance.now();
+    placeFood();
+    over.style.display = 'none';
+    scoreEl.textContent = '0'; stateEl.textContent = '';
+    window.focus();
+  }
+  // Test hook: JARVIS's runtime tester reads the game state through this.
+  window.jarvisState = () => ({ score, gameOver: !alive, snake: snake.map(s => ({ x: s.x, y: s.y })), food, dir, cols: N, rows: N });
+  function gameOver() {
+    alive = false;
+    best = Math.max(best, score); bestEl.textContent = best;
+    finalEl.textContent = 'Score: ' + score;
+    over.style.display = 'flex';
+    document.getElementById('restart').focus();
+    parent.postMessage({ jarvisGame: 'gameover', score }, '*');
+  }
+  function step() {
+    dir = nextDir;
+    const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+    const eating = food && head.x === food.x && head.y === food.y;
+    // Walls and own body (the tail moves away this step unless we grow).
+    const body = eating ? snake : snake.slice(0, -1);
+    if (head.x < 0 || head.y < 0 || head.x >= N || head.y >= N || body.some(s => s.x === head.x && s.y === head.y)) return gameOver();
+    snake.unshift(head);
+    if (eating) {
+      score += 10; scoreEl.textContent = score;
+      stepMs = Math.max(60, stepMs - 3);
+      placeFood();
+      if (!food) return gameOver();     // board full: you win, still the end of the round
+    } else snake.pop();
+  }
+  function draw() {
+    const c = canvas.width / N;
+    ctx.fillStyle = '#08111c'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#0f2233'; ctx.lineWidth = 1;
+    for (let i = 1; i < N; i++) { ctx.beginPath(); ctx.moveTo(i * c, 0); ctx.lineTo(i * c, canvas.height); ctx.moveTo(0, i * c); ctx.lineTo(canvas.width, i * c); ctx.stroke(); }
+    if (food) { ctx.fillStyle = '#ff4d6d'; ctx.beginPath(); ctx.arc(food.x * c + c / 2, food.y * c + c / 2, c * 0.38, 0, Math.PI * 2); ctx.fill(); }
+    snake.forEach((s, i) => {
+      ctx.fillStyle = i === 0 ? '#7ff6ff' : '#00e5ff';
+      ctx.fillRect(s.x * c + 1, s.y * c + 1, c - 2, c - 2);
+    });
+  }
+  function loop(now) {
+    if (alive && !paused) {
+      acc += now - last;
+      while (acc >= stepMs && alive) { acc -= stepMs; step(); }
+    }
+    last = now;
+    draw();
+    requestAnimationFrame(loop);
+  }
+  const KEYS = { ArrowUp: [0, -1], KeyW: [0, -1], ArrowDown: [0, 1], KeyS: [0, 1], ArrowLeft: [-1, 0], KeyA: [-1, 0], ArrowRight: [1, 0], KeyD: [1, 0] };
+  addEventListener('keydown', e => {
+    const k = KEYS[e.code];
+    if (k) {
+      e.preventDefault();
+      if (k[0] !== -dir.x || k[1] !== -dir.y) nextDir = { x: k[0], y: k[1] }; // no reversing into yourself
+    } else if (e.code === 'KeyP' && alive) { paused = !paused; stateEl.textContent = paused ? 'PAUSED' : ''; }
+    else if ((e.code === 'Enter' || e.code === 'Space') && !alive) { e.preventDefault(); reset(); }
+  });
+  document.getElementById('restart').addEventListener('click', reset);
+  addEventListener('resize', fit);
+  canvas.addEventListener('pointerdown', () => window.focus());
+  fit(); reset(); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

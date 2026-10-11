@@ -1,0 +1,159 @@
+/* J.A.R.V.I.S. themes (Settings → Theme). Everything is CSS variables:
+   - --dc / --dc-rgb / --dy / --dg / --dgray… : the dashboard accent tokens
+   - --color-cyan-* / --color-sky-*           : Tailwind's palette (every cyan/sky utility follows it)
+   - --radius-*, --jv-radius                  : corner rounding
+   - --jv-bg / --jv-panel-bg                  : page and panel backgrounds
+   The theme is picked in src/theme.ts and saved in localStorage. */
+
+:root {
+  --dc: #00e5ff;
+  --dc-rgb: 0, 229, 255;
+  --dy: #facc15;
+  --dg: #00ff9d;
+  --dgray: #738b9e;
+  --dgray-l: #8da3b5;
+  --dpurple: #d946ef;
+  --dpink: #ec4899;
+  --ddark: rgba(13, 37, 63, 0.6);
+  --dmono: 'Space Mono', 'Share Tech Mono', monospace;
+  --dtech: 'Rajdhani', sans-serif;
+  --jv-radius: 12px;
+}
+
+/* CYBERPUNK: brutalist black, neon red, square corners, CRT scanlines */
+:root[data-theme='cyberpunk'] {
+  --color-cyan-50: oklch(98.4% 0.029 22);
+  --color-cyan-100: oklch(95.6% 0.070 22);
+  --color-cyan-200: oklch(91.7% 0.124 22);
+  --color-cyan-300: oklch(86.5% 0.202 22);
+  --color-cyan-400: oklch(78.9% 0.239 22);
+  --color-cyan-500: oklch(71.5% 0.222 22);
+  --color-cyan-600: oklch(60.9% 0.195 22);
+  --color-cyan-700: oklch(52.0% 0.163 22);
+  --color-cyan-800: oklch(45.0% 0.132 22);
+  --color-cyan-900: oklch(39.8% 0.109 22);
+  --color-cyan-950: oklch(30.2% 0.087 22);
+  --color-sky-50: oklch(98.4% 0.029 22);
+  --color-sky-100: oklch(95.6% 0.070 22);
+  --color-sky-200: oklch(91.7% 0.124 22);
+  --color-sky-300: oklch(86.5% 0.202 22);
+  --color-sky-400: oklch(78.9% 0.239 22);
+  --color-sky-500: oklch(71.5% 0.222 22);
+  --color-sky-600: oklch(60.9% 0.195 22);
+  --color-sky-700: oklch(52.0% 0.163 22);
+  --color-sky-800: oklch(45.0% 0.132 22);
+  --color-sky-900: oklch(39.8% 0.109 22);
+  --color-sky-950: oklch(30.2% 0.087 22);
+  --dc: #ff2a4d;
+  --dc-rgb: 255, 42, 77;
+  --dy: #ffe600;
+  --dgray: #8f6b72;
+  --dgray-l: #c29aa1;
+  --ddark: rgba(90, 10, 25, 0.6);
+  --jv-bg: #000000;
+  --jv-panel-bg: rgba(0, 0, 0, 0.92);
+  --jv-border: rgba(255, 42, 77, 0.45);
+  --jv-radius: 0px;
+  --radius-xs: 0px; --radius-sm: 0px; --radius-md: 0px; --radius-lg: 0px; --radius-xl: 0px; --radius-2xl: 0px; --radius-3xl: 0px;
+}
+:root[data-theme='cyberpunk'] body { background: #000; }
+:root[data-theme='cyberpunk'] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.28) 0px, rgba(0, 0, 0, 0.28) 1px, transparent 1px, transparent 3px),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.45) 100%);
+  animation: jv-crt-flicker 6s infinite steps(1);
+}
+@keyframes jv-crt-flicker { 0%, 96%, 100% { opacity: 1; } 97% { opacity: 0.85; } 98% { opacity: 0.95; } }
+@media (prefers-reduced-motion: reduce) { :root[data-theme='cyberpunk'] body::after { animation: none; } }
+
+/* STEALTH: minimal dark slate, purple accent, no glow */
+:root[data-theme='stealth'] {
+  --color-cyan-50: oklch(98.4% 0.018 293);
+  --color-cyan-100: oklch(95.6% 0.043 293);
+  --color-cyan-200: oklch(91.7% 0.076 293);
+  --color-cyan-300: oklch(86.5% 0.123 293);
+  --color-cyan-400: oklch(78.9% 0.146 293);
+  --color-cyan-500: oklch(71.5% 0.136 293);
+  --color-cyan-600: oklch(60.9% 0.120 293);
+  --color-cyan-700: oklch(52.0% 0.100 293);
+  --color-cyan-800: oklch(45.0% 0.081 293);
+  --color-cyan-900: oklch(39.8% 0.067 293);
+  --color-cyan-950: oklch(30.2% 0.053 293);
+  --color-sky-50: oklch(98.4% 0.018 293);
+  --color-sky-100: oklch(95.6% 0.043 293);
+  --color-sky-200: oklch(91.7% 0.076 293);
+  --color-sky-300: oklch(86.5% 0.123 293);
+  --color-sky-400: oklch(78.9% 0.146 293);
+  --color-sky-500: oklch(71.5% 0.136 293);
+  --color-sky-600: oklch(60.9% 0.120 293);
+  --color-sky-700: oklch(52.0% 0.100 293);
+  --color-sky-800: oklch(45.0% 0.081 293);
+  --color-sky-900: oklch(39.8% 0.067 293);
+  --color-sky-950: oklch(30.2% 0.053 293);
+  --dc: #a78bfa;
+  --dc-rgb: 167, 139, 250;
+  --dy: #c4b5fd;
+  --dg: #86efac;
+  --dgray: #6b7280;
+  --dgray-l: #9ca3af;
+  --ddark: rgba(55, 48, 80, 0.6);
+  --jv-bg: #0f1117;
+  --jv-panel-bg: rgba(17, 19, 26, 0.9);
+  --jv-border: rgba(148, 163, 184, 0.18);
+}
+:root[data-theme='stealth'] body { background: #0f1117; }
+:root[data-theme='stealth'] .jv-glow-c,
+:root[data-theme='stealth'] .jv-glow-y,
+:root[data-theme='stealth'] .jv-glow-g,
+:root[data-theme='stealth'] .jv-hud-title { text-shadow: none; }
+:root[data-theme='stealth'] .jv-hud,
+:root[data-theme='stealth'] .jv-terminal,
+:root[data-theme='stealth'] .jv-command { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45); }
+
+/* TERMINAL: retro pitch black, amber phosphor, monospace everywhere */
+:root[data-theme='terminal'] {
+  --color-cyan-50: oklch(98.4% 0.022 75);
+  --color-cyan-100: oklch(95.6% 0.052 75);
+  --color-cyan-200: oklch(91.7% 0.092 75);
+  --color-cyan-300: oklch(86.5% 0.149 75);
+  --color-cyan-400: oklch(78.9% 0.177 75);
+  --color-cyan-500: oklch(71.5% 0.164 75);
+  --color-cyan-600: oklch(60.9% 0.145 75);
+  --color-cyan-700: oklch(52.0% 0.121 75);
+  --color-cyan-800: oklch(45.0% 0.098 75);
+  --color-cyan-900: oklch(39.8% 0.081 75);
+  --color-cyan-950: oklch(30.2% 0.064 75);
+  --color-sky-50: oklch(98.4% 0.022 75);
+  --color-sky-100: oklch(95.6% 0.052 75);
+  --color-sky-200: oklch(91.7% 0.092 75);
+  --color-sky-300: oklch(86.5% 0.149 75);
+  --color-sky-400: oklch(78.9% 0.177 75);
+  --color-sky-500: oklch(71.5% 0.164 75);
+  --color-sky-600: oklch(60.9% 0.145 75);
+  --color-sky-700: oklch(52.0% 0.121 75);
+  --color-sky-800: oklch(45.0% 0.098 75);
+  --color-sky-900: oklch(39.8% 0.081 75);
+  --color-sky-950: oklch(30.2% 0.064 75);
+  --dc: #ffb000;
+  --dc-rgb: 255, 176, 0;
+  --dy: #ffd166;
+  --dg: #ffcf4d;
+  --dgray: #9a7a3a;
+  --dgray-l: #c9a25a;
+  --ddark: rgba(80, 55, 0, 0.55);
+  --dmono: 'Share Tech Mono', monospace;
+  --dtech: 'Share Tech Mono', monospace;
+  --jv-bg: #000000;
+  --jv-panel-bg: rgba(0, 0, 0, 0.95);
+  --jv-border: rgba(255, 176, 0, 0.35);
+  --jv-radius: 2px;
+  --radius-sm: 2px; --radius-md: 2px; --radius-lg: 2px; --radius-xl: 2px; --radius-2xl: 2px; --radius-3xl: 2px;
+}
+:root[data-theme='terminal'] body { background: #000; }
+:root[data-theme='terminal'] body,
+:root[data-theme='terminal'] body *:not(svg):not(svg *) { font-family: 'Share Tech Mono', monospace !important; }

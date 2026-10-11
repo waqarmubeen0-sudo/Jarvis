@@ -1,0 +1,147 @@
+/* J.A.R.V.I.S. Agent Town — live panel built on the supplied artwork */
+.agent-town-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: #020812;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.agent-town-canvas-wrapper {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  background: #020812;
+  overflow: hidden;
+}
+
+.agent-town-backdrop {
+  position: absolute;
+  inset: -24px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(18px) brightness(0.3) saturate(1.2);
+}
+
+.agent-town-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Invisible, keyboard-focusable button over the artwork's CHAT button */
+.agent-town-chat-hit {
+  position: absolute;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.agent-town-chat-hit:hover { box-shadow: 0 0 14px rgba(56, 189, 248, 0.55); }
+.agent-town-chat-hit:focus-visible { outline: 2px solid #67e8f9; outline-offset: 2px; }
+
+/* Agent info card */
+.agent-info-panel {
+  position: absolute;
+  top: 12%;
+  right: 3%;
+  width: min(270px, 60%);
+  padding: 10px;
+  background: rgba(3, 9, 20, 0.95);
+  border: 1px solid rgba(34, 211, 238, 0.55);
+  border-radius: 6px;
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.2);
+  font-family: 'Share Tech Mono', monospace;
+  color: #cbd5e1;
+  z-index: 5;
+}
+
+.agent-info-head { display: flex; gap: 9px; align-items: flex-start; }
+
+.agent-info-portrait {
+  width: 52px;
+  height: 72px;
+  flex-shrink: 0;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  border-radius: 3px;
+  background-color: #071225;
+}
+
+.agent-info-name { font-family: 'Orbitron', monospace; font-weight: 800; font-size: 13px; color: #67e8f9; letter-spacing: 0.08em; }
+.agent-info-role { font-size: 10px; color: #94a3b8; margin-top: 1px; }
+.agent-info-status { display: flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700; margin-top: 5px; }
+.agent-info-status span { width: 7px; height: 7px; display: inline-block; }
+
+.agent-info-close {
+  margin-left: auto;
+  color: #94a3b8;
+  padding: 2px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.agent-info-close:hover { color: #e2e8f0; border-color: rgba(34, 211, 238, 0.4); }
+
+.agent-info-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 8px;
+  margin: 9px 0 8px;
+  font-size: 10px;
+}
+.agent-info-grid dt { color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+.agent-info-grid dd { margin: 0; color: #e2e8f0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.agent-info-progress {
+  position: relative;
+  display: block;
+  height: 12px;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+}
+.agent-info-progress span { position: absolute; inset: 0 auto 0 0; background: rgba(251, 191, 36, 0.55); }
+.agent-info-progress b { position: relative; font-size: 9px; font-weight: 700; padding-left: 4px; line-height: 10px; }
+
+.agent-info-dispatch { display: flex; gap: 4px; }
+.agent-info-dispatch input {
+  flex: 1;
+  min-width: 0;
+  font-size: 10px;
+  padding: 4px 6px;
+  background: #071225;
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  border-radius: 3px;
+  color: #e2e8f0;
+  outline: none;
+}
+.agent-info-dispatch input:focus { border-color: #22d3ee; }
+.agent-info-dispatch button {
+  padding: 0 8px;
+  background: #0284c7;
+  border: 1px solid #38bdf8;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Pause / resume override button in the agent card */
+.agent-info-pause {
+  margin-left: 6px;
+  padding: 0 5px;
+  font: 700 8.5px 'Share Tech Mono', monospace;
+  letter-spacing: 0.08em;
+  color: #93c5fd;
+  background: rgba(30, 58, 138, 0.35);
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.agent-info-pause:hover { color: #fff; border-color: #60a5fa; }
+.agent-info-pause:disabled { opacity: 0.5; cursor: default; }

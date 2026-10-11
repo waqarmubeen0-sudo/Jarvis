@@ -1,0 +1,91 @@
+{
+  "name": "jarvis",
+  "productName": "JARVIS",
+  "version": "1.0.0",
+  "description": "J.A.R.V.I.S. real-time voice assistant for your PC. Bring your own Gemini API key.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "main": "jarvis-desktop.mjs",
+  "scripts": {
+    "dev": "tsx server.ts",
+    "start": "tsx server.ts",
+    "build": "vite build && node scripts/scan-secrets.mjs dist",
+    "build:desktop": "vite build && esbuild desktop/main.ts --bundle --platform=node --format=esm --packages=external --outfile=jarvis-desktop.mjs",
+    "desktop": "npm run build:desktop && electron .",
+    "dist": "npm run build:desktop && node scripts/scan-secrets.mjs dist jarvis-desktop.mjs && electron-builder --win --publish never && node scripts/scan-secrets.mjs release",
+    "scan-secrets": "node scripts/scan-secrets.mjs .",
+    "preview": "vite preview",
+    "clean": "rm -rf dist release jarvis-desktop.mjs",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "^2.4.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "imapflow": "^2.2.1",
+    "jszip": "^3.10.2",
+    "mailparser": "^3.9.33",
+    "mammoth": "^1.13.0",
+    "nodemailer": "^10.0.13",
+    "unpdf": "^1.8.1",
+    "word-extractor": "^1.0.4",
+    "ws": "^8.21.3",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/express": "^4.17.21",
+    "@types/mailparser": "^3.9.0",
+    "@types/node": "^22.14.0",
+    "@types/nodemailer": "^8.0.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/ws": "^8.18.1",
+    "@vitejs/plugin-react": "^6.1.1",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.28.2",
+    "lucide-react": "^0.546.0",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.21.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  },
+  "build": {
+    "appId": "com.jarvis.voiceagent",
+    "productName": "JARVIS",
+    "electronDist": "node_modules/electron/dist",
+    "directories": {
+      "output": "release"
+    },
+    "asar": true,
+    "files": [
+      "jarvis-desktop.mjs",
+      "dist/**",
+      "game-library/**",
+      "package.json",
+      "!**/*.map",
+      "!**/.env*"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "JARVIS-Setup-${version}.exe"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Utility"
+    }
+  },
+  "author": "JARVIS contributors"
+}

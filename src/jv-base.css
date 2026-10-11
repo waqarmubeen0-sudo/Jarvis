@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+:root {
+  --jv-bg: #0a0d12;
+  --jv-panel-bg: rgba(13, 17, 23, 0.88);
+  --jv-panel-header: rgba(18, 24, 34, 0.95);
+  --jv-border: rgba(38, 48, 64, 0.65);
+  --jv-border-hover: rgba(6, 182, 212, 0.5);
+  --jv-cyan: #06b6d4;
+  --jv-teal: #14b8a6;
+  --jv-amber: #f59e0b;
+  --jv-emerald: #10b981;
+  --jv-rose: #f43f5e;
+  --jv-purple: #a855f7;
+
+  /* Backward compatibility aliases */
+  --stonic-cyan: var(--jv-cyan);
+  --stonic-amber: var(--jv-amber);
+  --stonic-emerald: var(--jv-emerald);
+  --stonic-rose: var(--jv-rose);
+  --stonic-purple: var(--jv-purple);
+  --stonic-bg: var(--jv-bg);
+  --stonic-panel-bg: var(--jv-panel-bg);
+}
+
+body {
+  background-color: var(--jv-bg);
+  color: #ecfeff;
+  font-family: 'Rajdhani', 'JetBrains Mono', 'Fira Code', monospace;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* J.A.R.V.I.S. Obsidian Panel & Cyberpunk Utilities */
+.jv-obsidian-panel {
+  background: var(--jv-panel-bg);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--jv-border);
+  border-radius: min(10px, var(--jv-radius, 10px));
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.7);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jv-obsidian-panel:hover {
+  border-color: rgba(6, 182, 212, 0.35);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.12), 0 4px 20px -2px rgba(0, 0, 0, 0.8);
+}
+
+.stonic-glass, .jv-glass {
+  background: var(--jv-panel-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--jv-border);
+  border-radius: 10px;
+}
+
+.jv-glow-cyan, .stonic-glow-cyan {
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.35);
+}
+
+.jv-glow-teal {
+  box-shadow: 0 0 16px rgba(20, 184, 166, 0.35);
+}
+
+.jv-glow-amber, .stonic-glow-amber {
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+}
+
+.stonic-border-glow, .jv-border-glow {
+  position: relative;
+}
+.stonic-border-glow::before, .jv-border-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.4), rgba(20, 184, 166, 0.4), rgba(245, 158, 11, 0.3));
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.7;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s infinite ease-in-out;
+}

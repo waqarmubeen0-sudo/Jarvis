@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pong</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #05080e; color: #e6faff; font-family: 'Courier New', monospace; overflow: hidden; }
+  #wrap { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  canvas { background: #08111c; border: 2px solid #00e5ff55; box-shadow: 0 0 24px #00e5ff33; }
+  #help { font-size: 12px; color: #7f97a8; }
+  #over { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #000a; }
+  #over h1 { margin: 0; font-size: 34px; letter-spacing: 4px; }
+  button { font: inherit; font-size: 16px; padding: 10px 22px; color: #05080e; background: #00e5ff; border: 0; border-radius: 6px; cursor: pointer; letter-spacing: 2px; }
+  button:hover { filter: brightness(1.15); }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c" width="640" height="400" aria-label="Pong court"></canvas>
+  <div id="help">W/S or ↑/↓ to move · first to 7 wins · P to pause · Enter to restart</div>
+</div>
+<div id="over" role="dialog" aria-label="Game over">
+  <h1 id="result">GAME OVER</h1>
+  <div id="final"></div>
+  <button id="restart" type="button">RESTART</button>
+</div>
+<script>
+(() => {
+  const W = 640, H = 400, PW = 10, PH = 70, BALL = 9, WIN = 7;
+  const canvas = document.getElementById('c'), ctx = canvas.getContext('2d');
+  const over = document.getElementById('over'), resultEl = document.getElementById('result'), finalEl = document.getElementById('final');
+  const keys = new Set();
+  let p, ai, ball, score, running, paused, serveAt, last;
+
+  function fit() {
+    const s = Math.min((innerWidth - 20) / W, (innerHeight - 60) / H);
+    canvas.style.width = Math.max(240, W * s) + 'px';
+    canvas.style.height = Math.max(150, H * s) + 'px';
+  }
+  function serve(towards) {
+    const a = (Math.random() * 0.8 - 0.4);
+    ball = { x: W / 2, y: H / 2, vx: Math.cos(a) * 300 * towards, vy: Math.sin(a) * 300 };
+    serveAt = performance.now() + 700; // short pause before each serve
+  }
+  function reset() {
+    p = { y: H / 2 - PH / 2 }; ai = { y: H / 2 - PH / 2 };
+    score = [0, 0]; running = true; paused = false; last = performance.now();
+    serve(Math.random() < 0.5 ? -1 : 1);
+    over.style.display = 'none';
+    window.focus();
+  }
+  // Test hook: JARVIS's runtime tester reads the game state through this.
+  window.jarvisState = () => ({ score: score[0], opponent: score[1], gameOver: !running, ball: { x: ball.x, y: ball.y }, paddle: p.y });
+  function end() {
+    running = false;
+    const won = score[0] > score[1];
+    resultEl.textContent = won ? 'YOU WIN' : 'GAME OVER';
+    resultEl.style.color = won ? '#00ff9d' : '#ff4d6d';
+    finalEl.textContent = 'You ' + score[0] + ' : ' + score[1] + ' JARVIS';
+    over.style.display = 'flex';
+    document.getElementById('restart').focus();
+    parent.postMessage({ jarvisGame: 'gameover', score: score[0] }, '*');
+  }
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  function update(dt, now) {
+    const dy = (keys.has('ArrowUp') || keys.has('KeyW') ? -1 : 0) + (keys.has('ArrowDown') || keys.has('KeyS') ? 1 : 0);
+    p.y = clamp(p.y + dy * 380 * dt, 0, H - PH);
+    // AI tracks the ball with a capped speed, so it can be beaten.
+    const target = ball.y - PH / 2;
+    ai.y = clamp(ai.y + clamp(target - ai.y, -260 * dt, 260 * dt), 0, H - PH);
+    if (now < serveAt) return;
+    ball.x += ball.vx * dt; ball.y += ball.vy * dt;
+    if (ball.y < BALL / 2) { ball.y = BALL / 2; ball.vy = Math.abs(ball.vy); }
+    if (ball.y > H - BALL / 2) { ball.y = H - BALL / 2; ball.vy = -Math.abs(ball.vy); }
+    const hit = (padY, x, dirOut) => {
+      if (ball.y < padY - BALL / 2 || ball.y > padY + PH + BALL / 2) return false;
+      const rel = (ball.y - (padY + PH / 2)) / (PH / 2);      // -1..1: where it hit the paddle
+      const speed = Math.min(Math.hypot(ball.vx, ball.vy) * 1.06, 760);
+      const ang = rel * 0.9;
+      ball.vx = Math.cos(ang) * speed * dirOut; ball.vy = Math.sin(ang) * speed; ball.x = x;
+      return true;
+    };
+    if (ball.vx < 0 && ball.x - BALL / 2 <= 20 + PW && ball.x > 10) hit(p.y, 20 + PW + BALL / 2, 1);
+    if (ball.vx > 0 && ball.x + BALL / 2 >= W - 20 - PW && ball.x < W - 10) hit(ai.y, W - 20 - PW - BALL / 2, -1);
+    if (ball.x < -BALL) { score[1]++; score[1] >= WIN ? end() : serve(1); }
+    if (ball.x > W + BALL) { score[0]++; score[0] >= WIN ? end() : serve(-1); }
+  }
+  function draw() {
+    ctx.fillStyle = '#08111c'; ctx.fillRect(0, 0, W, H);
+    ctx.setLineDash([8, 10]); ctx.strokeStyle = '#1d3346'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(W / 2, 0); ctx.lineTo(W / 2, H); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#e6faff'; ctx.font = '36px Courier New'; ctx.textAlign = 'center';
+    ctx.fillText(score[0], W / 2 - 60, 50); ctx.fillText(score[1], W / 2 + 60, 50);
+    ctx.fillStyle = '#00e5ff'; ctx.fillRect(20, p.y, PW, PH);
+    ctx.fillStyle = '#ff4d6d'; ctx.fillRect(W - 20 - PW, ai.y, PW, PH);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(ball.x - BALL / 2, ball.y - BALL / 2, BALL, BALL);
+    if (paused) { ctx.fillStyle = '#ffffffcc'; ctx.fillText('PAUSED', W / 2, H / 2); }
+  }
+  function loop(now) {
+    const dt = Math.min(0.033, (now - last) / 1000); last = now;
+    if (running && !paused) update(dt, now);
+    draw();
+    requestAnimationFrame(loop);
+  }
+  addEventListener('keydown', e => {
+    if (['ArrowUp', 'ArrowDown', 'Space'].includes(e.code)) e.preventDefault();
+    keys.add(e.code);
+    if (e.code === 'KeyP' && running) paused = !paused;
+    if ((e.code === 'Enter' || e.code === 'Space') && !running) reset();
+  });
+  addEventListener('keyup', e => keys.delete(e.code));
+  addEventListener('blur', () => keys.clear());
+  document.getElementById('restart').addEventListener('click', reset);
+  canvas.addEventListener('pointerdown', () => window.focus());
+  addEventListener('resize', fit);
+  fit(); reset(); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

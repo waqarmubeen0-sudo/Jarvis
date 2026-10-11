@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Rajdhani', -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: 0.03em;
+    background-color: #030712;
+    color: #e0f2fe;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-mono-tech {
+    font-family: 'Orbitron', monospace, sans-serif;
+    letter-spacing: 0.08em;
+  }
+
+  .font-code {
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .font-tech {
+    font-family: 'Chakra Petch', sans-serif;
+  }
+}
+
+/* Custom Scanlines & Grid Effects */
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.bg-radial-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.15) 0%, rgba(3, 7, 18, 0.8) 70%, #030712 100%);
+}
+
+.scanline {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(6, 182, 212, 0.08) 50%,
+    rgba(6, 182, 212, 0.08)
+  );
+  background-size: 100% 4px;
+}
+
+/* Custom Scrollbar for Sci-Fi HUD */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(3, 7, 18, 0.8);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(6, 182, 212, 0.3);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.6);
+}
+
+/* Animations */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse-slow {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.6)); }
+  50% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(6, 182, 212, 0.9)); }
+}
+
+@keyframes hud-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 24s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+  animation: spin-reverse-slow 18s linear infinite;
+}
+
+.animate-spin-medium {
+  animation: spin-slow 10s linear infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-hud-scan {
+  animation: hud-scan 3s ease-in-out infinite;
+}
+

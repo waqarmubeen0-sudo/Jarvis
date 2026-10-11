@@ -1,0 +1,64 @@
+# --- Secrets and personal data: never commit ---
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+credentials/
+credentials.bin
+local-config/
+user-data/
+# Your own JARVIS settings (permissions, name, voice); new installs use the defaults in apiSettings.ts
+jarvis-settings.json
+# Games your agents built on this PC (the built-in ones are in game-library/)
+generated-games/
+
+# --- Dependencies and build output ---
+node_modules/
+dist/
+build/
+release/
+out/
+jarvis-desktop.mjs
+coverage/
+
+# --- Logs, caches, temporary and editor files ---
+logs/
+*.log
+.cache/
+.vite/
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+# npm is the package manager (package-lock.json)
+bun.lock
+# Internal audit notes (contain local paths)
+JARVIS_GITHUB_SECURITY_PLAN.md
+JARVIS_CLEANUP_REVIEW.md
+# Credential and token files (never commit)
+credentials.json
+token.json
+service-account*.json
+# Python environments and caches
+venv/
+.venv/
+__pycache__/
+*.pyc
+# Recordings, chat history and memory data
+recordings/
+*.wav
+*.webm
+chat-history/
+*.jsonl
+memory.json
+# Not part of JARVIS: the separate Python globe app, and old AI Studio metadata
+app.py
+web/
+start-globe.bat
+metadata.json
