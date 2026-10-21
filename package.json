@@ -52,7 +52,7 @@
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",
     "typescript": "^7.0.2",
-    "vite": "^8.3.0"
+    "vite": "^8.3.4"
   },
   "build": {
     "appId": "com.jarvis.voiceagent",
